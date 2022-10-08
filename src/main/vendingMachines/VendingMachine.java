@@ -18,6 +18,8 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     private Map<Payment, Integer> insertedPayments;
     private KeyBad keyBad;
     private Product selectedProduct;
+    private int change;
+    private int returned;
 
     VendingMachine() {
         this.products = new HashMap<>();
@@ -78,6 +80,7 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     @Override
     public void returnChange() {
         int change = this.insertedTotal - this.selectedProduct.getPrice();
+        this.change = change;
         System.out.println("Change is $" + getAmountInUSD(change));
         for (Note note : Note.values()) {
             change = printChange(note, change);
@@ -153,10 +156,31 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     @Override
     public void keyBadCancelClick() {
         this.selectedProduct = null;
-        insertedPayments.forEach((key, value) -> System.out.println(value + " $" + getAmountInUSD(key.amount()) + " Returned"));
+
+        insertedPayments.forEach((key, value) -> {
+            System.out.println(value + " $" + getAmountInUSD(key.amount()) + " Returned");
+            this.returned += key.amount();
+        });
     }
 
     private BigDecimal getAmountInUSD(int amount) {
         return new BigDecimal(amount).movePointLeft(2);
+    }
+
+    public String getSelectedProductName() {
+        if (selectedProduct == null) return null;
+        return selectedProduct.getName();
+    }
+
+    public int getInsertedTotal() {
+        return this.insertedTotal;
+    }
+
+    public int getChange() {
+        return this.change;
+    }
+
+    public int getReturned() {
+        return this.returned;
     }
 }
