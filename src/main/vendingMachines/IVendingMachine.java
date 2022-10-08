@@ -8,6 +8,7 @@ interface IVendingMachine {
     void addProduct(Product product);
     void pressKey(KeyBadInput keyBadInput);
     void insertPayment(PaymentMethod paymentMethod);
+    boolean validatePayment(PaymentMethod paymentMethod);
     void dispensesProduct();
     void returnChange();
 }

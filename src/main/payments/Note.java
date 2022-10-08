@@ -1,8 +1,8 @@
 package main.payments;
 
 public enum Note implements Payment {
-    D20(2000),
-    D50(5000);
+    D50(5000),
+    D20(2000);
 
     private int amountInCent;
 

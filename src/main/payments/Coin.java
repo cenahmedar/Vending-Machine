@@ -1,10 +1,10 @@
 package main.payments;
 
 public enum Coin implements Payment {
-    C10(10),
-    C20(20),
+    D1(100),
     C50(50),
-    D1(100);
+    C20(20),
+    C10(10);
 
     private int amountInCent;
 

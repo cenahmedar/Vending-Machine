@@ -19,7 +19,4 @@ public abstract class PaymentMethod {
         return payment.amount();
     }
 
-    public String getName() {
-        return payment.toString();
-    }
 }

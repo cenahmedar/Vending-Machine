@@ -1,10 +1,7 @@
 package main;
 
 import main.parts.KeyBadInput;
-import main.payments.Coin;
-import main.payments.CoinPaymentMethod;
-import main.payments.Note;
-import main.payments.NotePaymentMethod;
+import main.payments.*;
 import main.vendingMachines.SnackMachine;
 
 public class Main {

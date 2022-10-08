@@ -3,9 +3,7 @@ package main.vendingMachines;
 import main.parts.IKeyBadOnSubmit;
 import main.parts.KeyBad;
 import main.parts.KeyBadInput;
-import main.payments.Note;
-import main.payments.Payment;
-import main.payments.PaymentMethod;
+import main.payments.*;
 import main.prodcuts.Product;
 
 import java.math.BigDecimal;
@@ -13,9 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
-    //Integer: product keypad number
     private Map<Integer, Product> products;
-    // holds product name and keypad number
     private Map<String, Integer> productsMapper;
     private int currentProductKeypadNumber = 1;
     private int insertedTotal = 0;
@@ -32,25 +28,46 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
 
     @Override
     public void insertPayment(PaymentMethod paymentMethod) {
-        if (!paymentMethod.isValid()) {
-            System.out.println("Invalid payment");
-            System.out.println("$" + getAmountInUSD(paymentMethod.payment.amount()) + " Returned");
-            return;
-        }
-        this.insertedTotal += paymentMethod.getAmount();
+        if (!this.validatePayment(paymentMethod)) return;
 
-        if (this.insertedPayments.containsKey(paymentMethod.payment)) {
-            this.insertedPayments.put(paymentMethod.payment, insertedPayments.get(paymentMethod.payment) + 1);
-        } else {
-            this.insertedPayments.put(paymentMethod.payment, 1);
-        }
-
+        addNewPaymentAmount(paymentMethod);
+        saveNewPayment(paymentMethod);
 
         printTotalAmount();
         boolean dispenseProduct = checkIfAmountIsEnough();
         if (!dispenseProduct) return;
         dispensesProduct();
         returnChange();
+    }
+
+    @Override
+    public boolean validatePayment(PaymentMethod paymentMethod) {
+        if (this.selectedProduct == null) {
+            System.out.println("Please select product first");
+            return false;
+        }
+        if (!paymentMethod.isValid()) {
+            System.out.println("Invalid payment");
+            System.out.println("$" + getAmountInUSD(paymentMethod.payment.amount()) + " Returned");
+            return false;
+        }
+        return true;
+    }
+
+    private void addNewPaymentAmount(PaymentMethod paymentMethod) {
+        if (paymentMethod.payment == Card.VISA) {
+            this.insertedTotal = selectedProduct.getPrice();
+        } else {
+            this.insertedTotal += paymentMethod.getAmount();
+        }
+    }
+
+    private void saveNewPayment(PaymentMethod paymentMethod) {
+        if (this.insertedPayments.containsKey(paymentMethod.payment)) {
+            this.insertedPayments.put(paymentMethod.payment, insertedPayments.get(paymentMethod.payment) + 1);
+        } else {
+            this.insertedPayments.put(paymentMethod.payment, 1);
+        }
     }
 
     @Override
@@ -65,13 +82,19 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
         for (Note note : Note.values()) {
             change = printChange(note, change);
         }
+
+        for (Coin coin : Coin.values()) {
+            change = printChange(coin, change);
+        }
+
+        this.selectedProduct = null;
     }
 
     private int printChange(Payment payment, int change) {
         int numberOfDispenses = change / payment.amount();
         if (numberOfDispenses == 0) return change;
         System.out.println(numberOfDispenses + " $" + getAmountInUSD(payment.amount()) + " Dispensed");
-        return numberOfDispenses * payment.amount();
+        return change - (numberOfDispenses * payment.amount());
     }
 
     private void printTotalAmount() {

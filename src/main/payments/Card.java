@@ -1,5 +1,10 @@
 package main.payments;
 
-public class Card {
+public enum Card implements Payment {
+    VISA;
 
+    @Override
+    public int amount() {
+        return 0;
+    }
 }
