@@ -3,6 +3,7 @@ package main.vendingMachines;
 import main.parts.IKeyBadOnSubmit;
 import main.parts.KeyBad;
 import main.parts.KeyBadInput;
+import main.payments.Note;
 import main.payments.Payment;
 import main.payments.PaymentMethod;
 import main.prodcuts.Product;
@@ -40,20 +41,42 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
         this.insertedTotal += payment.getAmount();
         this.insertedPayments.add(payment.payment);
         printTotalAmount();
-        checkIfAmountIsEnough();
+        boolean dispenseProdcut = checkIfAmountIsEnough();
+        if (!dispenseProdcut) return;
+        dispensesProduct();
+        returnChange();
+    }
+
+    @Override
+    public void dispensesProduct() {
+        System.out.println("Please pick your " + selectedProduct.getName());
+    }
+
+    @Override
+    public void returnChange() {
+        int change = this.insertedTotal - this.selectedProduct.getPrice();
+        System.out.println("Change is $" + getAmountInUSD(change));
+        for (Note note : Note.values()) {
+            change = printChange(note,change);
+        }
+
+    }
+
+    private int printChange(Payment payment, int change) {
+        int numberOfDispenses = change / payment.amount();
+        if (numberOfDispenses == 0) return change;
+        System.out.println(numberOfDispenses + " $" + getAmountInUSD(payment.amount()) +" Dispensed");
+        return numberOfDispenses * payment.amount();
     }
 
     private void printTotalAmount() {
-        BigDecimal payment = new BigDecimal(insertedTotal).movePointLeft(2);
-        System.out.println("Total Entered Amount is $" + payment);
+        System.out.println("Total Entered Amount is $" + getAmountInUSD(insertedTotal));
     }
 
-    private void checkIfAmountIsEnough() {
-        if (insertedTotal < selectedProduct.getPrice()) {
-            BigDecimal remainAmount = new BigDecimal(selectedProduct.getPrice() - insertedTotal).movePointLeft(2);
-            System.out.println("You need $" + remainAmount + " more");
-            return;
-        }
+    private boolean checkIfAmountIsEnough() {
+        if (insertedTotal >= selectedProduct.getPrice()) return true;
+        System.out.println("You need $" + getAmountInUSD(selectedProduct.getPrice() - insertedTotal) + " more");
+        return false;
     }
 
     @Override
@@ -95,8 +118,11 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
             return;
         }
 
-        BigDecimal price = new BigDecimal(product.getPrice()).movePointLeft(2);
-        System.out.println("Selected product Price is $" + price);
+        System.out.println("Selected product Price is $" + getAmountInUSD(product.getPrice()));
         this.selectedProduct = product;
+    }
+
+    private BigDecimal getAmountInUSD(int amount) {
+        return new BigDecimal(amount).movePointLeft(2);
     }
 }

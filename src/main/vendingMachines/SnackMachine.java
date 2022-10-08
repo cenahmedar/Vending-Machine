@@ -10,7 +10,7 @@ public class SnackMachine extends VendingMachine {
 
     private void addSnacks() {
         this.addProduct(new Product("Cheetos", 12000, 3));
-        this.addProduct(new Product("Snickers", 8000, 5));
+        this.addProduct(new Product("Snickers", 6000, 5));
         this.addProduct(new Product("Pringles", 23000, 6));
         this.addProduct(new Product("Oreos", 15000, 4));
     }
