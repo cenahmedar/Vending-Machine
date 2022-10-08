@@ -10,9 +10,7 @@ import main.prodcuts.Product;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     //Integer: product keypad number
@@ -21,25 +19,32 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     private Map<String, Integer> productsMapper;
     private int currentProductKeypadNumber = 1;
     private int insertedTotal = 0;
-    private Set<Payment> insertedPayments;
+    private Map<Payment, Integer> insertedPayments;
     private KeyBad keyBad;
     private Product selectedProduct;
 
     VendingMachine() {
         this.products = new HashMap<>();
         this.productsMapper = new HashMap<>();
-        this.insertedPayments = new HashSet<>();
+        this.insertedPayments = new HashMap<>();
         this.keyBad = new KeyBad(this);
     }
 
     @Override
-    public void insertPayment(PaymentMethod payment) {
-        if (!payment.isValid()) {
+    public void insertPayment(PaymentMethod paymentMethod) {
+        if (!paymentMethod.isValid()) {
             System.out.println("Invalid payment");
             return;
         }
-        this.insertedTotal += payment.getAmount();
-        this.insertedPayments.add(payment.payment);
+        this.insertedTotal += paymentMethod.getAmount();
+
+        if (this.insertedPayments.containsKey(paymentMethod.payment)) {
+            this.insertedPayments.put(paymentMethod.payment, insertedPayments.get(paymentMethod.payment) + 1);
+        } else {
+            this.insertedPayments.put(paymentMethod.payment, 1);
+        }
+
+
         printTotalAmount();
         boolean dispenseProdcut = checkIfAmountIsEnough();
         if (!dispenseProdcut) return;
@@ -57,15 +62,14 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
         int change = this.insertedTotal - this.selectedProduct.getPrice();
         System.out.println("Change is $" + getAmountInUSD(change));
         for (Note note : Note.values()) {
-            change = printChange(note,change);
+            change = printChange(note, change);
         }
-
     }
 
     private int printChange(Payment payment, int change) {
         int numberOfDispenses = change / payment.amount();
         if (numberOfDispenses == 0) return change;
-        System.out.println(numberOfDispenses + " $" + getAmountInUSD(payment.amount()) +" Dispensed");
+        System.out.println(numberOfDispenses + " $" + getAmountInUSD(payment.amount()) + " Dispensed");
         return numberOfDispenses * payment.amount();
     }
 
@@ -107,7 +111,7 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     }
 
     @Override
-    public void keyBadSubmit(int selectedItem) {
+    public void keyBadSubmitClick(int selectedItem) {
         if (!this.products.containsKey(selectedItem)) {
             System.out.println("Product is not available");
             return;
@@ -120,6 +124,12 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
 
         System.out.println("Selected product Price is $" + getAmountInUSD(product.getPrice()));
         this.selectedProduct = product;
+    }
+
+    @Override
+    public void keyBadCancelClick() {
+        this.selectedProduct = null;
+        insertedPayments.forEach((key, value) -> System.out.println(value + " $" + getAmountInUSD(key.amount()) + " Returned"));
     }
 
     private BigDecimal getAmountInUSD(int amount) {

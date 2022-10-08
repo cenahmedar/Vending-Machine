@@ -12,7 +12,8 @@ public enum KeyBadInput {
     NINE(9),
     ZERO(0),
     DELETE(-1),
-    SUBMIT(-1);
+    SUBMIT(-1),
+    CANCEL(-1);
 
     private final int value;
 

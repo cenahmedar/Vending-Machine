@@ -1,5 +1,6 @@
 package main.parts;
 
 public interface IKeyBadOnSubmit {
-    void keyBadSubmit(int selectedItem);
+    void keyBadSubmitClick(int selectedItem);
+    void keyBadCancelClick();
 }

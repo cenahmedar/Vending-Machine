@@ -19,7 +19,11 @@ public class KeyBad {
                 System.out.println("Please enter product number");
                 return;
             }
-            keyBadOnSubmit.keyBadSubmit(Integer.parseInt(selection));
+            keyBadOnSubmit.keyBadSubmitClick(Integer.parseInt(selection));
+            return;
+        }
+        if(keyBadInput == KeyBadInput.CANCEL){
+            keyBadOnSubmit.keyBadCancelClick();
             return;
         }
         selection += keyBadInput.getValue();

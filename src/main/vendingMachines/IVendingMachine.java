@@ -7,7 +7,7 @@ import main.prodcuts.Product;
 interface IVendingMachine {
     void addProduct(Product product);
     void pressKey(KeyBadInput keyBadInput);
-    void insertPayment(PaymentMethod payment);
+    void insertPayment(PaymentMethod paymentMethod);
     void dispensesProduct();
     void returnChange();
 }
