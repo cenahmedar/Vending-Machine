@@ -1,6 +1,8 @@
 package main;
 
 import main.parts.KeyBadInput;
+import main.payments.Coin;
+import main.payments.CoinPaymentMethod;
 import main.payments.Note;
 import main.payments.NotePaymentMethod;
 import main.vendingMachines.SnackMachine;
@@ -12,6 +14,7 @@ public class Main {
         snackMachine.pressKey(KeyBadInput.TOW);
         snackMachine.pressKey(KeyBadInput.SUBMIT);
         snackMachine.insertPayment(new NotePaymentMethod(Note.D20));
+        snackMachine.insertPayment(new CoinPaymentMethod(Coin.D1));
         snackMachine.insertPayment(new NotePaymentMethod(Note.D50));
     }
 }

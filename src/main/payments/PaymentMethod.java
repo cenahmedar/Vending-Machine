@@ -2,11 +2,11 @@ package main.payments;
 
 import main.parts.Slot;
 
-public abstract class PaymentMethod<T extends Payment> {
+public abstract class PaymentMethod {
     Slot slot;
-    public T payment;
+    public Payment payment;
 
-    PaymentMethod(T payment) {
+    PaymentMethod(Payment payment) {
         this.payment = payment;
         this.slot = getSlot();
     }

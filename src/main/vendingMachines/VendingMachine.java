@@ -34,6 +34,7 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
     public void insertPayment(PaymentMethod paymentMethod) {
         if (!paymentMethod.isValid()) {
             System.out.println("Invalid payment");
+            System.out.println("$" + getAmountInUSD(paymentMethod.payment.amount()) + " Returned");
             return;
         }
         this.insertedTotal += paymentMethod.getAmount();
@@ -46,8 +47,8 @@ class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
 
 
         printTotalAmount();
-        boolean dispenseProdcut = checkIfAmountIsEnough();
-        if (!dispenseProdcut) return;
+        boolean dispenseProduct = checkIfAmountIsEnough();
+        if (!dispenseProduct) return;
         dispensesProduct();
         returnChange();
     }

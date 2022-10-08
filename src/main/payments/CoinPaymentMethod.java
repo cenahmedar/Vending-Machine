@@ -1,11 +1,11 @@
 package main.payments;
 
-import main.parts.NoteSlot;
+import main.parts.CoinSlot;
 import main.parts.Slot;
 
-public class NotePaymentMethod extends PaymentMethod {
+public class CoinPaymentMethod extends PaymentMethod {
 
-    public NotePaymentMethod(Payment payment) {
+    public CoinPaymentMethod(Payment payment) {
         super(payment);
     }
 
@@ -16,6 +16,6 @@ public class NotePaymentMethod extends PaymentMethod {
 
     @Override
     public Slot getSlot() {
-        return new NoteSlot();
+        return new CoinSlot();
     }
 }
