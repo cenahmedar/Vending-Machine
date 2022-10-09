@@ -11,4 +11,5 @@ interface IVendingMachine {
     boolean validatePayment(PaymentMethod paymentMethod);
     void dispensesProduct();
     void returnChange();
+    void reset();
 }
