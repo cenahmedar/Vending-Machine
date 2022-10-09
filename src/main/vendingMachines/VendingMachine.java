@@ -142,6 +142,7 @@ abstract class VendingMachine implements IVendingMachine, IKeyBadOnSubmit {
         if (change != 0) {
             this.remainChange = change;
             System.out.println("There is no enough change");
+            keyBadCancelClick();
             return;
         }
 
